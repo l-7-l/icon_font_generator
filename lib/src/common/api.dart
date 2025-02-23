@@ -79,6 +79,7 @@ SvgToOtfResult svgToOtf({
 String generateFlutterClass({
   required List<GenericGlyph> glyphList,
   String? className,
+  String? namingStrategy,
   String? familyName,
   String? fontFileName,
   String? package,
@@ -87,6 +88,7 @@ String generateFlutterClass({
   final generator = FlutterClassGenerator(
     glyphList,
     className: className,
+    namingStrategy: namingStrategy,
     indent: indent,
     fontFileName: fontFileName,
     familyName: familyName,

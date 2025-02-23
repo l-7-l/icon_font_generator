@@ -14,13 +14,13 @@ Compatible with dart2js and dart2native.
 
 ## Font generation
 
-### Install via dev dependency
+### Install via dev dependency 通过 dev 项目依赖安装
 
 ```shell
 $ flutter pub add --dev icon_font_generator
 
 # And it's ready to go:
-$ flutter pub run icon_font_generator:generate <input-svg-dir> <output-font-file> [options]
+$ flutter pub run icon_font_generator:generator <input-svg-dir> <output-font-file> [options]
 ```
 
 ### or [Globally activate][] the package:
@@ -32,6 +32,56 @@ $ pub global activate icon_font_generator
 
 # And it's ready to go:
 $ icon_font_generator <input-svg-dir> <output-font-file> [options]
+```
+
+### Friendly reminder 友情提示
+>
+> 如果你的svg文件是 evenodd, 且 icon 显示不正确, 请安装 [picosvg https://github.com/googlefonts/picosvg](https://github.com/googlefonts/picosvg) 并使用下面的脚本
+> If your svg file is evenodd, and the icon is not displayed correctly, please install [picosvg https://github.com/googlefonts/picosvg](https://github.com/googlefonts/picosvg) and use the following script
+
+```shell
+
+```sh
+
+  sudo chmod +x ./picosvg.sh  && ./picosvg.sh
+  <!-- or -->
+  sh ./picosvg.sh
+
+```
+
+> 👇 ./picosvg.sh
+
+```sh
+#!/bin/bash
+# 检查是否安装了 picosvg
+if ! command -v picosvg &> /dev/null
+then
+    echo "picosvg 未安装，正在安装..."
+    pip3 install picosvg
+    if [ $? -ne 0 ]; then
+        echo "picosvg 安装失败，请手动安装 picosvg。"
+        exit 1
+    fi
+fi
+
+# 输入和输出目录
+input_dir="./assets/fonts/svg"
+output_dir="./assets/fonts/fix"
+
+# 确保输出目录存在
+mkdir -p "$output_dir"
+
+# 遍历输入目录中的所有 SVG 文件
+for svg_file in "$input_dir"/*.svg; do
+    # 提取文件名，不带路径
+    file_name=$(basename "$svg_file")
+    
+    # 使用 picosvg 处理并输出到目标目录
+    picosvg "$svg_file" > "$output_dir/$file_name"
+    
+    # 打印处理的信息（可选）
+    echo "Processed $file_name"
+done
 ```
 
 Required positional arguments:
@@ -95,18 +145,17 @@ Add _icon_font_ section to either `pubspec.yaml` or `icon_font.yaml` file:
 
 ```yaml
 icon_font:
-  input_svg_dir: "assets/svg/"
-  output_font_file: "fonts/my_icons_font.otf"
-  
-  output_class_file: "lib/my_icons.dart"
-  class_name: "MyIcons"
-  package: my_font_package
+  input_svg_dir: "assets/fonts/fix/"
+  output_font_file: "assets/fonts/iconfont.otf"
+
+  output_class_file: "lib/widgets/iconfont.dart"
+  font_name: "Iconfont"
+  class_name: "Iconfont"
   format: true
 
-  font_name: "My Icons"
+  naming_strategy: "snake"
   normalize: true
-  ignore_shapes: true
-
+  ignore_shapes: false
   recursive: true
   verbose: false
 ```

@@ -19,6 +19,14 @@ void defineOptions(ArgParser argParser) {
       valueHelp: 'name',
     )
     ..addOption(
+      kOptionNames[CliArgument.namingStrategy]!,
+      abbr: 's',
+      help: 'Naming strategy of generated code.',
+      defaultsTo: kDefaultNamingStrategy,
+      valueHelp: 'strategy',
+      allowed: {'camel', 'snake'},
+    )
+    ..addOption(
       kOptionNames[CliArgument.fontPackage]!,
       abbr: 'f',
       help:

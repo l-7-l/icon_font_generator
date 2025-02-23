@@ -11,6 +11,7 @@ import 'formatter.dart';
 
 const _kDefaultConfigPathList = ['pubspec.yaml', 'icon_font.yaml'];
 const _kPositionalArguments = [CliArgument.svgDir, CliArgument.fontFile];
+const kDefaultNamingStrategy = 'snake';
 
 const _kArgAllowedTypes = <CliArgument, List<Type>>{
   CliArgument.svgDir: [String],
@@ -37,6 +38,7 @@ const kOptionNames = EnumClass<CliArgument, String>({
 
   CliArgument.classFile: 'output-class-file',
   CliArgument.className: 'class-name',
+  CliArgument.namingStrategy: 'naming-strategy',
   CliArgument.fontPackage: 'package',
   CliArgument.format: 'format',
 
@@ -57,6 +59,7 @@ const kConfigKeys = EnumClass<CliArgument, String>({
 
   CliArgument.classFile: 'output_class_file',
   CliArgument.className: 'class_name',
+  CliArgument.namingStrategy: 'naming_strategy',
   CliArgument.fontPackage: 'package',
   CliArgument.format: 'format',
 
@@ -83,6 +86,7 @@ enum CliArgument {
   // Class-related
   classFile,
   className,
+  namingStrategy,
   fontPackage,
   format,
 
@@ -107,6 +111,7 @@ class CliArguments {
     this.fontFile,
     this.classFile,
     this.className,
+    this.namingStrategy,
     this.fontPackage,
     this.format,
     this.fontName,
@@ -129,6 +134,7 @@ class CliArguments {
       map[CliArgument.fontFile] as File,
       map[CliArgument.classFile] as File?,
       map[CliArgument.className] as String?,
+      map[CliArgument.namingStrategy] as String?,
       map[CliArgument.fontPackage] as String?,
       map[CliArgument.format] as bool?,
       map[CliArgument.fontName] as String?,
@@ -144,6 +150,7 @@ class CliArguments {
   final File fontFile;
   final File? classFile;
   final String? className;
+  final String? namingStrategy;
   final String? fontPackage;
   final bool? format;
   final String? fontName;

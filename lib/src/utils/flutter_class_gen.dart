@@ -1,6 +1,7 @@
 import 'package:path/path.dart' as p;
 import 'package:recase/recase.dart';
 
+import '../cli/arguments.dart';
 import '../common/constant.dart';
 import '../common/generic_glyph.dart';
 import '../otf/defaults.dart';
@@ -14,7 +15,7 @@ const _kDefaultFontFileName = 'icon_font_generator_icons.otf';
 ///
 /// Returns a new string.
 String _getVarName(String string) {
-  final replaced = string.replaceAll(RegExp(r'[^a-zA-Z0-9_$]'), '');
+  final replaced = string.replaceAll(RegExp(r'[^a-zA-Z0-9_\-$]'), '');
   return RegExp(r'^[a-zA-Z$].*').firstMatch(replaced)?.group(0) ?? '';
 }
 
@@ -29,31 +30,41 @@ class FlutterClassGenerator {
   FlutterClassGenerator(
     this.glyphList, {
     String? className,
+    String? namingStrategy,
     String? familyName,
     String? fontFileName,
     String? package,
     int? indent,
   })  : _indent = ' ' * (indent ?? _kDefaultIndent),
         _className = _getVarName(className ?? _kDefaultClassName),
+        _namingStrategy = namingStrategy ?? kDefaultNamingStrategy,
         _familyName = familyName ?? kDefaultFontFamily,
         _fontFileName = fontFileName ?? _kDefaultFontFileName,
-        _iconVarNames = _generateVariableNames(glyphList),
+        _iconVarNames = _generateVariableNames(
+            glyphList, namingStrategy ?? kDefaultNamingStrategy),
         _package = package?.isEmpty ?? true ? null : package;
 
   final List<GenericGlyph> glyphList;
   final String _fontFileName;
   final String _className;
+  final String? _namingStrategy;
   final String _familyName;
   final String _indent;
   final String? _package;
   final List<String> _iconVarNames;
 
-  static List<String> _generateVariableNames(List<GenericGlyph> glyphList) {
+  static List<String> _generateVariableNames(
+      List<GenericGlyph> glyphList, String? namingStrategy) {
     final iconNameSet = <String>{};
 
     return glyphList.map((g) {
-      final baseName =
-          _getVarName(p.basenameWithoutExtension(g.metadata.name!)).camelCase;
+      final baseNameWithoutCase =
+          _getVarName(p.basenameWithoutExtension(g.metadata.name!));
+
+      final baseName = namingStrategy == 'camel'
+          ? baseNameWithoutCase.camelCase
+          : baseNameWithoutCase.snakeCase;
+
       final usingDefaultName = baseName.isEmpty;
 
       var variableName = usingDefaultName ? _kUnnamedIconName : baseName;
